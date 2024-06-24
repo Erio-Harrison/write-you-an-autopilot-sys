@@ -1,0 +1,60 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# ROS2 specific
+build/
+install/
+log/
+src/*/__pycache__/
+src/*/*.pyc
+
+# Backup files created by editors
+*~
+*.swp
+
+# Editor directories and files
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Operating system generated files
+.DS_Store
+Thumbs.db
+
+# Ignore files related to project configurations
+*.launch.xml
+*.yaml
+
+# Private files that may contain sensitive info
+config/private/
+
+# Ignore all log files and temporary files
+*.log
+*.tmp

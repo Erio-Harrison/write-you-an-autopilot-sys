@@ -14,6 +14,12 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='perception',
+            executable='lidar_simulator_node',
+            name='lidar_simulator',
+            output='screen'
+        ),
+        Node(
+            package='perception',
             executable='obstacle_detection_node',
             name='obstacle_detection',
             output='screen'

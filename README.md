@@ -19,13 +19,7 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 
 ## Use
 
-1. Clone repository: 
-
-   ```bash
-   git clone https://github.com/Erio-Harrison/ros2_basic.git
-   ```
-
-   Then: 
+1. Clone this repository, then:
 
    ```bash
    cd auto_drive

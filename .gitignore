@@ -58,3 +58,6 @@ config/private/
 # Ignore all log files and temporary files
 *.log
 *.tmp
+
+# Ignore the _pycache_ under launch
+launch/__pycache__

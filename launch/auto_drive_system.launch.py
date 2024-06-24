@@ -10,8 +10,6 @@ def generate_launch_description():
 
     # RViz配置文件的路径（假设它在 rviz 目录下）
     rviz_config_path = os.path.join(current_dir,'..', 'rviz', 'auto_drive.rviz')
-    
-    print(f"RViz config path: {os.path.abspath(rviz_config_path)}")
 
     return LaunchDescription([
         Node(

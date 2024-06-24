@@ -15,6 +15,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(auto_drive_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIR})
+
 
 # 添加 obstacle_detection_node
 add_executable(obstacle_detection_node src/obstacle_detection_node.cpp)
@@ -31,6 +34,8 @@ ament_target_dependencies(obstacle_tracking_node
   auto_drive_msgs
   sensor_msgs
 )
+
+target_link_libraries(obstacle_tracking_node Eigen3::Eigen)
 
 # 安装可执行文件
 install(TARGETS

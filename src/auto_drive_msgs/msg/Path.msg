@@ -4,7 +4,7 @@ std_msgs/Header header
 # An array of poses that represent the path
 geometry_msgs/PoseStamped[] poses
 
-# Optionally, you might want to include:
+# Optionally, we might want to include:
 # Path length
 float64 length
 

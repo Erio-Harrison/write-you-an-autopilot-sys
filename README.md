@@ -1,4 +1,4 @@
-# auto_drive subsystem
+# auto_drive
 
 An autonomous driving perception and planning system based on ROS2, including obstacle detection, tracking and path planning functions.
 

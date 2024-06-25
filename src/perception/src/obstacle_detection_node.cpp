@@ -56,23 +56,6 @@ private:
         }
     }
 
-    std::vector<Point> kMeansClustering2(const std::vector<Point>& points, int k, int maxIteration = 50)
-    {
-        std::vector<Point> centroids(k);
-        for(int i = 0; i < k; ++i){
-            centroids[i] = points[i];
-        }
-
-        for(int inter = 0; iter < maxIteration; ++iter){
-            std::vector<std::vector<Point>> clusters(k);
-
-            for(const auto& point : points){
-                int nearest = 0;
-                double minDist = std::numeric_limits<double>::max();
-                for(int i = 0; i < k; ++i){}
-            }
-        }
-    }
     std::vector<Point> kMeansClustering(const std::vector<Point>& points, int k, int maxIterations = 50) 
     {
         std::vector<Point> centroids(k);

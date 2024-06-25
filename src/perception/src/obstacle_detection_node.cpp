@@ -55,8 +55,8 @@ private:
                         obstacle_msg.id, obstacle_msg.position.x, obstacle_msg.position.y, obstacle_msg.position.z);
         }
     }
-
-    std::vector<Point> kMeansClustering(const std::vector<Point>& points, int k, int maxIterations = 100) 
+    
+    std::vector<Point> kMeansClustering(const std::vector<Point>& points, int k, int maxIterations = 50) 
     {
         std::vector<Point> centroids(k);
         for (int i = 0; i < k; ++i) {

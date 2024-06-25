@@ -23,6 +23,7 @@ private:
         cloud.height = 1;
         cloud.width = 50;  // 50 points
         cloud.is_dense = true;
+        //大端小端，false为小端
         cloud.is_bigendian = false;
         cloud.fields.resize(3);
         
@@ -40,7 +41,7 @@ private:
         cloud.fields[2].offset = 8;
         cloud.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
         cloud.fields[2].count = 1;
-        
+
         cloud.point_step = 12;  // 4 bytes per float, 3 floats per point
         cloud.row_step = cloud.point_step * cloud.width;
         cloud.data.resize(cloud.row_step * cloud.height);

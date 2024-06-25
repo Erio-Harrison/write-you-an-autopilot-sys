@@ -93,7 +93,7 @@ private:
         tracked_msg.velocity.x = state(3);
         tracked_msg.velocity.y = state(4);
         tracked_msg.velocity.z = state(5);
-
+        
         tracked_obstacle_pub_->publish(tracked_msg);
         RCLCPP_INFO(this->get_logger(), "Tracked and published an obstacle with ID: %d", msg->id);
     }

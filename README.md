@@ -35,7 +35,7 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
    ros2 launch launch/auto_drive_system.launch.py
    ```
 
-You may see something like this:
+   You may see something like this:
 
 ![result](./asset/configure.png)
 

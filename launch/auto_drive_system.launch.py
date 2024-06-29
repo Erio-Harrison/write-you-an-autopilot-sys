@@ -13,8 +13,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         Node(
-            package='perception',
-            executable='lidar_simulator_node',
+            package='sensor_simulator',
+            executable='lidar_simulator',
             name='lidar_simulator',
             output='screen'
         ),

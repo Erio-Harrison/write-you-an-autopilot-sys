@@ -10,6 +10,10 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
+# add lidar_simulator executable
+add_executable(lidar_simulator src/lidar_simulator_node.cpp)
+ament_target_dependencies(lidar_simulator rclcpp sensor_msgs)
+
 # add gps_simulator executable
 add_executable(gps_simulator src/gps_simulator_node.cpp)
 ament_target_dependencies(gps_simulator rclcpp sensor_msgs)
@@ -19,6 +23,7 @@ add_executable(imu_simulator src/imu_simulator_node.cpp)
 ament_target_dependencies(imu_simulator rclcpp sensor_msgs)
 
 install(TARGETS
+  lidar_simulator
   gps_simulator
   imu_simulator
   DESTINATION lib/${PROJECT_NAME}

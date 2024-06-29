@@ -18,15 +18,6 @@ find_package(sensor_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 
-
-# 添加 lidar_simulator_node
-add_executable(lidar_simulator_node src/lidar_simulator_node.cpp)
-ament_target_dependencies(lidar_simulator_node
-  rclcpp
-  auto_drive_msgs
-  sensor_msgs
-)
-
 # 添加 obstacle_detection_node
 add_executable(obstacle_detection_node src/obstacle_detection_node.cpp)
 ament_target_dependencies(obstacle_detection_node
@@ -49,7 +40,6 @@ target_link_libraries(obstacle_tracking_node Eigen3::Eigen)
 install(TARGETS
   obstacle_detection_node
   obstacle_tracking_node
-  lidar_simulator_node
   DESTINATION lib/${PROJECT_NAME}
 )
 

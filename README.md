@@ -4,7 +4,7 @@ An autonomous driving perception and planning system based on ROS2, including ob
 
 Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planning -> control instructions (analog output)
 
-![result](./readme_asset/configure.png)
+![result](./asset/system_design.png)
 
 ## Table of contents
 
@@ -34,6 +34,8 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
    ```bash
    ros2 launch launch/auto_drive_system.launch.py
    ```
+
+![result](./asset/configure.png)
 
 ## Contribution
 

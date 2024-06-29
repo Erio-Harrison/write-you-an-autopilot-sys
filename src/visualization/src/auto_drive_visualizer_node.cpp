@@ -50,7 +50,7 @@ private:
         marker.header.frame_id = "map";
         marker.header.stamp = this->now();
         marker.ns = ns;
-        marker.id = msg->id + id_offset * 1000; // Use offset to differentiate detected and tracked obstacles
+        marker.id = msg->id;
         marker.type = visualization_msgs::msg::Marker::CUBE;
         marker.action = visualization_msgs::msg::Marker::ADD;
         

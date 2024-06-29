@@ -25,11 +25,11 @@ public:
 
 private:
     void detectedObstacleCallback(const auto_drive_msgs::msg::Obstacle::SharedPtr msg) {
-        publishObstacleMarker(msg, 0, 1.0, 0.0, 0.0); // Red for detected obstacles
+        publishObstacleMarker(msg, 0, 1.0, 0.0, 0.0,"detected_obstacles"); // Red for detected obstacles
     }
 
     void trackedObstacleCallback(const auto_drive_msgs::msg::Obstacle::SharedPtr msg) {
-        publishObstacleMarker(msg, 1, 0.0, 1.0, 0.0); // Green for tracked obstacles
+        publishObstacleMarker(msg, 1, 0.0, 1.0, 0.0,"tracked_obstacles"); // Green for tracked obstacles
     }
 
     void pathCallback(const auto_drive_msgs::msg::Path::SharedPtr msg) {
@@ -44,12 +44,12 @@ private:
         path_pub_->publish(path);
     }
 
-    void publishObstacleMarker(const auto_drive_msgs::msg::Obstacle::SharedPtr msg, int id_offset, float r, float g, float b) {
+    void publishObstacleMarker(const auto_drive_msgs::msg::Obstacle::SharedPtr msg, int id_offset, float r, float g, float b,const std::string& ns) {
         visualization_msgs::msg::MarkerArray marker_array;
         visualization_msgs::msg::Marker marker;
         marker.header.frame_id = "map";
         marker.header.stamp = this->now();
-        marker.ns = "obstacles";
+        marker.ns = ns;
         marker.id = msg->id + id_offset * 1000; // Use offset to differentiate detected and tracked obstacles
         marker.type = visualization_msgs::msg::Marker::CUBE;
         marker.action = visualization_msgs::msg::Marker::ADD;

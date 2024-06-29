@@ -6,12 +6,6 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 
 ![result](./asset/system_design.png)
 
-## Table of contents
-
-- [Install](#Install)
-- [Use](#Use)
-- [Contribution](#Contribution)
-
 ## Install
 
 [ROS2 Basic](https://github.com/Erio-Harrison/ros2_basic)

@@ -10,8 +10,7 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>auto_drive_msgs</depend>
-  <depend>network_comm</depend>
+  <depend>libzmq3-dev</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

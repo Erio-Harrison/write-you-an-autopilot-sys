@@ -9,16 +9,41 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(auto_drive_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(Eigen3 REQUIRED)
+
+# 添加头文件目录
+include_directories(
+  include
+  ${EIGEN3_INCLUDE_DIR}
+)
+
+# 添加可执行文件
+add_executable(gps_imu_fusion_node
+  src/gps_imu_fusion_node.cpp
+)
+
+# 链接依赖库
+ament_target_dependencies(gps_imu_fusion_node
+  rclcpp
+  auto_drive_msgs
+  sensor_msgs
+)
+
+# 安装可执行文件
+install(TARGETS
+  gps_imu_fusion_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# 安装头文件
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION include/${PROJECT_NAME}
+  FILES_MATCHING PATTERN "*.hpp"
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
 

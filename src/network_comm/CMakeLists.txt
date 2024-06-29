@@ -1,36 +1,68 @@
 cmake_minimum_required(VERSION 3.8)
-project(auto_drive_network_bridge)
+project(network_comm)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(auto_drive_msgs REQUIRED)
-find_package(network_comm REQUIRED)
 
-add_executable(network_bridge_node 
-  src/network_bridge_node.cpp
+# 手动查找 ZeroMQ
+find_path(ZMQ_INCLUDE_DIR zmq.h)
+find_library(ZMQ_LIBRARY NAMES zmq)
+
+if(NOT ZMQ_INCLUDE_DIR OR NOT ZMQ_LIBRARY)
+  message(FATAL_ERROR "ZeroMQ not found. Please install libzmq3-dev")
+endif()
+
+# 添加头文件目录
+include_directories(
+  include
+  ${ZMQ_INCLUDE_DIR}
 )
 
-target_include_directories(network_bridge_node PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+# 添加库
+add_library(${PROJECT_NAME} SHARED
+  src/zeromq_adapter.cpp
 )
 
-ament_target_dependencies(network_bridge_node
+# 链接依赖库
+target_link_libraries(${PROJECT_NAME}
+  ${ZMQ_LIBRARY}
+)
+
+ament_target_dependencies(${PROJECT_NAME}
   rclcpp
-  auto_drive_msgs
-  network_comm
 )
 
-install(TARGETS network_bridge_node
-  DESTINATION lib/${PROJECT_NAME}
+# 导出头文件
+ament_export_include_directories(include)
+# 导出库
+ament_export_libraries(${PROJECT_NAME})
+# 导出依赖
+ament_export_dependencies(rclcpp)
+
+# 安装头文件
+install(
+  DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION include/${PROJECT_NAME}
 )
 
-install(DIRECTORY include/
-  DESTINATION include/
+# 安装库
+install(
+  TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
 )
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
 
 ament_package()

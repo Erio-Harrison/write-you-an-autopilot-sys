@@ -90,7 +90,7 @@ private:
         marker.ns = "vehicle";
         marker.id = 0;
         marker.type = visualization_msgs::msg::Marker::ARROW;
-        marker.action = visualization_msgs::msg::Marker::ADD;
+        marker.action = visualization_msgs::msg::Marker::MODIFY;
 
         marker.pose.position.x = msg->position_x;
         marker.pose.position.y = msg->position_y;

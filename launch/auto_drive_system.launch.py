@@ -44,12 +44,6 @@ def generate_launch_description():
             output='screen'
         ),
         Node(
-            package='localization',
-            executable='gps_imu_fusion_node',
-            name='gps_imu_fusion',
-            output='screen'
-        ),
-        Node(
             package='visualization',
             executable='auto_drive_visualizer_node',
             name='auto_drive_visualizer',

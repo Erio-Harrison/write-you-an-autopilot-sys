@@ -18,7 +18,6 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Path.msg"
   "msg/VehicleState.msg"
   "msg/ControlCommand.msg"
-  "msg/LocalizationResult.msg"
   DEPENDENCIES geometry_msgs std_msgs builtin_interfaces
 )
 

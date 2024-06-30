@@ -30,6 +30,14 @@ private:
     RCLCPP_INFO(this->get_logger(), "Received new path with %zu points", current_path_.poses.size());
   }
 
+  /**
+   * The function `controlLoop` implements a simple P controller to update the position, orientation,
+   * velocity, and acceleration of a vehicle along a given path.
+   * 
+   * @return If the `current_path_.poses` vector is empty or if the `current_path_index_` is greater
+   * than or equal to the size of `current_path_.poses`, the controlLoop function will return early
+   * without executing the rest of the code inside the function.
+   */
   void controlLoop() {
     if (current_path_.poses.empty() || current_path_index_ >= current_path_.poses.size()) return;
 

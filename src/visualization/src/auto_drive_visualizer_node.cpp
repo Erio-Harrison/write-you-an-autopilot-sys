@@ -56,6 +56,27 @@ private:
         path_pub_->publish(path);
     }
 
+    /**
+     * The function `publishObstacleMarker` publishes a visualization marker representing an obstacle
+     * with specified color and namespace.
+     * 
+     * @param msg `msg` is a shared pointer to an `Obstacle` message from the `auto_drive_msgs`
+     * package. This message likely contains information about an obstacle detected by a system, such
+     * as its ID and position.
+     * @param r The `r` parameter in the `publishObstacleMarker` function represents the red component
+     * of the color used for visualizing the obstacle marker. It is a float value that should be
+     * between 0.0 and 1.0, indicating the intensity of the red color in the marker.
+     * @param g The parameter `g` in the `publishObstacleMarker` function represents the green
+     * component of the RGB color used for visualizing the obstacle marker. It is a float value ranging
+     * from 0.0 (no green) to 1.0 (full green intensity). By adjusting the `g
+     * @param b The parameter `b` in the `publishObstacleMarker` function represents the blue component
+     * of the color of the obstacle marker that will be visualized. It is used to set the blue value of
+     * the marker's color in the RGB color space.
+     * @param ns The `ns` parameter in the `publishObstacleMarker` function stands for the namespace of
+     * the marker. Namespaces are used to group related markers together, allowing you to organize and
+     * manage them more effectively. By setting a namespace for a marker, you can easily identify and
+     * manipulate markers that belong to
+     */
     void publishObstacleMarker(const auto_drive_msgs::msg::Obstacle::SharedPtr msg, float r, float g, float b,const std::string& ns) {
         visualization_msgs::msg::MarkerArray marker_array;
         visualization_msgs::msg::Marker marker;
@@ -83,6 +104,14 @@ private:
     }
 
 
+    /**
+     * The function `publishVehicleMarker` creates and publishes a visualization marker representing a
+     * vehicle's position and orientation in a 3D space.
+     * 
+     * @param msg The `msg` parameter in the `publishVehicleMarker` function is of type
+     * `auto_drive_msgs::msg::VehicleState::SharedPtr`. This parameter contains information about the
+     * state of a vehicle, such as its position and orientation.
+     */
     void publishVehicleMarker(const auto_drive_msgs::msg::VehicleState::SharedPtr msg) {
         visualization_msgs::msg::Marker marker;
         marker.header.frame_id = "map";

@@ -56,6 +56,24 @@ private:
         }
     }
 
+    /**
+     * The function `kMeansClustering` performs k-means clustering on a set of points to find k
+     * clusters with centroids, iterating until convergence or a maximum number of iterations.
+     * 
+     * @param points The `points` parameter in the `kMeansClustering` function represents a vector of
+     * `Point` objects. These `Point` objects likely contain coordinates in 3D space (x, y, z) that
+     * will be used for clustering using the k-means algorithm. Each `Point`
+     * @param k The parameter `k` in the `kMeansClustering` function represents the number of clusters
+     * you want to create in the k-means clustering algorithm. It determines how many centroids will be
+     * initialized and how many clusters the algorithm will try to form based on the input data points.
+     * @param maxIterations The `maxIterations` parameter in the `kMeansClustering` function specifies
+     * the maximum number of iterations the k-means algorithm will run before stopping, even if
+     * convergence is not achieved. This parameter allows you to control the maximum computational
+     * effort spent on clustering the data points. If the algorithm does not
+     * 
+     * @return The function `kMeansClustering` returns a `std::vector<Point>` containing the final
+     * centroids after performing k-means clustering on the input points.
+     */
     std::vector<Point> kMeansClustering(const std::vector<Point>& points, int k, int maxIterations = 50) 
     {
         std::vector<Point> centroids(k);

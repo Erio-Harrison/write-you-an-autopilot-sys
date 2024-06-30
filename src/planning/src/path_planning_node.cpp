@@ -75,6 +75,32 @@ private:
     }
 
     // A*算法实现
+    /**
+     * The above function implements the A* algorithm to find the shortest path between two points
+     * while avoiding obstacles.
+     * 
+     * @param start_x The `start_x` parameter in the `aStar` function represents the x-coordinate of
+     * the starting point for the A* algorithm to find a path. This algorithm is commonly used in
+     * pathfinding and graph traversal.
+     * @param start_y The `start_y` parameter in the `aStar` function represents the y-coordinate of
+     * the starting point for the A* algorithm to find a path. This algorithm is used for pathfinding
+     * in a grid-based environment, where `start_y` indicates the vertical position of the starting
+     * point on the grid
+     * @param end_x The `end_x` parameter in the A* algorithm function you provided represents the
+     * x-coordinate of the target or goal position in the grid-based pathfinding. The algorithm aims to
+     * find the shortest path from the starting position (specified by `start_x` and `start_y`) to this
+     * target position.
+     * @param end_y The `end_y` parameter in the `aStar` function represents the y-coordinate of the
+     * end point or goal position in a 2D grid or map. The A* algorithm implemented in this function
+     * aims to find the shortest path from a starting point `(start_x, start_y)` to the
+     * @param obstacle The `obstacle` parameter in the A* algorithm function represents a point in the
+     * 2D space that serves as an obstacle. The algorithm will avoid generating a path that passes
+     * through this obstacle point. The obstacle is defined by its x and y coordinates in the
+     * `geometry_msgs::msg::Point
+     * 
+     * @return A vector of pairs of integers representing the path from the start point to the end
+     * point calculated using the A* algorithm. If no path is found, an empty vector is returned.
+     */
     std::vector<std::pair<int, int>> aStar(int start_x, int start_y, int end_x, int end_y, const geometry_msgs::msg::Point& obstacle)
     {
         auto heuristic = [](int x1, int y1, int x2, int y2) {

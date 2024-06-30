@@ -66,6 +66,15 @@ public:
     }
 
 private:
+    /**
+     * The `obstacleCallback` function tracks and publishes the position and velocity of obstacles
+     * using a Kalman filter.
+     * 
+     * @param msg The `msg` parameter in the `obstacleCallback` function is of type
+     * `auto_drive_msgs::msg::Obstacle::SharedPtr`, which is a shared pointer to an `Obstacle` message.
+     * This message likely contains information about an obstacle detected by a sensor, such as its ID,
+     * position
+     */
     void obstacleCallback(const auto_drive_msgs::msg::Obstacle::SharedPtr msg) {
         auto it = trackers.find(msg->id);
         if (it == trackers.end()) {

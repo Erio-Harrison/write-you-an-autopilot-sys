@@ -15,6 +15,10 @@ public:
     }
 
 private:
+    /**
+     * The function `publish_simulated_pointcloud` generates a simulated point cloud message with 50
+     * points and publishes it.
+     */
     void publish_simulated_pointcloud()
     {
         sensor_msgs::msg::PointCloud2 cloud;

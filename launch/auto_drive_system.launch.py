@@ -44,6 +44,12 @@ def generate_launch_description():
             output='screen'
         ),
         Node(
+            package = 'control',
+            executable = 'vehicle_control_node',
+            name = 'vehicle_control',
+            output = 'screen'
+        ),
+        Node(
             package='visualization',
             executable='auto_drive_visualizer_node',
             name='auto_drive_visualizer',

@@ -9,26 +9,18 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(auto_drive_msgs REQUIRED)
 
 # add lidar_simulator executable
 add_executable(lidar_simulator src/lidar_simulator_node.cpp)
 ament_target_dependencies(lidar_simulator rclcpp sensor_msgs)
 
-# add vehicle_simulator executable
-add_executable(vehicle_simulator src/vehicle_simulator_node.cpp)
-ament_target_dependencies(vehicle_simulator rclcpp sensor_msgs)
-
-ament_target_dependencies(vehicle_simulator
+ament_target_dependencies(lidar_simulator
   rclcpp
-  auto_drive_msgs
   sensor_msgs
-  geometry_msgs
 )
 
 install(TARGETS
   lidar_simulator
-  vehicle_simulator
   DESTINATION lib/${PROJECT_NAME}
 )
 

@@ -33,12 +33,12 @@ class PathPlanningNode : public rclcpp::Node
 public:
     PathPlanningNode() : Node("path_planning")
     {
-        // 订阅跟踪后的障碍物信息
+        // Subscribe to the obstacle information after tracking
         obstacle_sub_ = this->create_subscription<auto_drive_msgs::msg::Obstacle>(
             "tracked_obstacles", 10, 
             std::bind(&PathPlanningNode::obstacleCallback, this, std::placeholders::_1));
 
-        // 发布规划后的路径
+        // Release the planned path
         path_pub_ = this->create_publisher<auto_drive_msgs::msg::Path>("planned_path", 10);
         RCLCPP_INFO(this->get_logger(), "Path Planning Node has been started.");
     }
@@ -52,11 +52,11 @@ private:
         path_msg->header.stamp = this->now();
         path_msg->header.frame_id = "map";
 
-        // 假设起点和终点
+        // Assume the starting and ending points
         int start_x = -10, start_y = -10;
         int end_x = 10, end_y = 10;
 
-        // 执行A*算法来计算路径
+        // Execute the A* algorithm to calculate the path
         std::vector<std::pair<int, int>> path = aStar(start_x, start_y, end_x, end_y, msg->position);
 
         for (const auto& [x, y] : path)
@@ -74,7 +74,6 @@ private:
         RCLCPP_INFO(this->get_logger(), "Published path with A* algorithm.");
     }
 
-    // A*算法实现
     /**
      * The above function implements the A* algorithm to find the shortest path between two points
      * while avoiding obstacles.
@@ -149,7 +148,7 @@ private:
                     continue;
                 }
 
-                // 跳过障碍物位置
+                // Jump over obstacle position
                 if (new_x == static_cast<int>(obstacle.x) && new_y == static_cast<int>(obstacle.y))
                 {
                     continue;
@@ -167,7 +166,7 @@ private:
             }
         }
 
-        return {}; // 未找到路径
+        return {}; // Path not found
     }
 
     rclcpp::Subscription<auto_drive_msgs::msg::Obstacle>::SharedPtr obstacle_sub_;

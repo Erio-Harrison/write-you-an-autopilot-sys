@@ -8,6 +8,8 @@ Panels:
         - /Status1
         - /MarkerArray1
         - /Path1
+        - /Marker1
+        - /Marker1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 549
   - Class: rviz_common/Selection
@@ -67,7 +69,8 @@ Visualization Manager:
       Enabled: true
       Name: MarkerArray
       Namespaces:
-        obstacles: true
+        detected_obstacles: true
+        tracked_obstacles: true
       Topic:
         Depth: 5
         Durability Policy: Volatile
@@ -102,6 +105,19 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /visualization_path
+      Value: true
+    - Class: rviz_default_plugins/Marker
+      Enabled: true
+      Name: Marker
+      Namespaces:
+        {}
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep All
+        Reliability Policy: Reliable
+        Value: /vehicle_marker
       Value: true
   Enabled: true
   Global Options:
@@ -164,10 +180,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4903974533081055
+      Pitch: 1.2847965955734253
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.00039922818541526794
+      Yaw: 6.233584403991699
     Saved: ~
 Window Geometry:
   Displays:
@@ -185,5 +201,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 487
-  Y: 48
+  X: 516
+  Y: 103

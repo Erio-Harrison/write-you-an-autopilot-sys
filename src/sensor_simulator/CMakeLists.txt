@@ -15,14 +15,6 @@ find_package(auto_drive_msgs REQUIRED)
 add_executable(lidar_simulator src/lidar_simulator_node.cpp)
 ament_target_dependencies(lidar_simulator rclcpp sensor_msgs)
 
-# add gps_simulator executable
-add_executable(gps_simulator src/gps_simulator_node.cpp)
-ament_target_dependencies(gps_simulator rclcpp sensor_msgs)
-
-# add imu_simulator executable
-add_executable(imu_simulator src/imu_simulator_node.cpp)
-ament_target_dependencies(imu_simulator rclcpp sensor_msgs)
-
 # add vehicle_simulator executable
 add_executable(vehicle_simulator src/vehicle_simulator_node.cpp)
 ament_target_dependencies(vehicle_simulator rclcpp sensor_msgs)
@@ -36,8 +28,6 @@ ament_target_dependencies(vehicle_simulator
 
 install(TARGETS
   lidar_simulator
-  gps_simulator
-  imu_simulator
   vehicle_simulator
   DESTINATION lib/${PROJECT_NAME}
 )

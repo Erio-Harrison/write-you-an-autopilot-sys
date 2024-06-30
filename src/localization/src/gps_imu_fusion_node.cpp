@@ -74,7 +74,9 @@ private:
         double y = R * lat_diff * M_PI / 180.0;
         double z = alt_diff;
 
-        return Eigen::Vector3d(x, y, z);
+        // 将坐标映射到 -10 到 10 的范围
+        const double scale = 20.0 / std::max({std::abs(x), std::abs(y), std::abs(z)});
+        return Eigen::Vector3d(x * scale, y * scale, z * scale);
     }
 
     void predictEKF(const sensor_msgs::msg::Imu& imu_msg) {
@@ -147,12 +149,11 @@ private:
 
     void publishState() {
         auto loc_result = std::make_unique<auto_drive_msgs::msg::LocalizationResult>();
-    
-        // 假设我们有一个函数可以将本地坐标转换回经纬度
-        auto [lat, lon, alt] = localToGPS(state_[0], state_[1], state_[2]);
-        loc_result->latitude = lat;
-        loc_result->longitude = lon;
-        loc_result->altitude = alt;
+
+        // 使用状态向量中的本地坐标
+        loc_result->latitude = state_[0];  // 将x坐标存储在latitude字段中
+        loc_result->longitude = state_[1]; // 将y坐标存储在longitude字段中
+        loc_result->altitude = state_[2];  // 将z坐标存储在altitude字段中
 
         // 填充位置协方差（这里简单地使用 P_ 矩阵的相应部分）
         for (int i = 0; i < 3; ++i) {
@@ -178,6 +179,7 @@ private:
 
         loc_pub_->publish(std::move(loc_result));
 
+        // VehicleState 消息保持不变
         auto vehicle_state = std::make_unique<auto_drive_msgs::msg::VehicleState>();
         vehicle_state->position_x = state_[0];
         vehicle_state->position_y = state_[1];

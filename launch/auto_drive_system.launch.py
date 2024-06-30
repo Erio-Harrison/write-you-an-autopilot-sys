@@ -18,6 +18,13 @@ def generate_launch_description():
             name='lidar_simulator',
             output='screen'
         ),
+        
+        Node(
+            package='sensor_simulator',
+            executable='vehicle_simulator',
+            name='vehicle_simulator',
+            output='screen'
+        ),
         Node(
             package='perception',
             executable='obstacle_detection_node',
@@ -34,6 +41,12 @@ def generate_launch_description():
             package='planning',
             executable='path_planning_node',
             name='path_planning',
+            output='screen'
+        ),
+        Node(
+            package='localization',
+            executable='gps_imu_fusion_node',
+            name='gps_imu_fusion',
             output='screen'
         ),
         Node(

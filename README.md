@@ -18,8 +18,14 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
    ```bash
    cd auto_drive
    ```
+2. We use ZeroMq for network communication:
 
-2. Build and Run: 
+   ```bash
+   sudo apt-get update
+   sudo apt-get install libzmq3-dev
+   ```
+
+3. Build and Run: 
 
    ```
    colcon build

@@ -2,19 +2,22 @@
 #include "communication_interface.hpp"
 #include <zmq.hpp>
 
-namespace network_comm{
-class ZeroMQAdapter : public CommunicationInterface{
-    public:
-        ZeroMQAdapter();
-        ~ZeroMQAdapter() override;
+namespace network_comm {
 
-        void connect(const std::string& address) override;
-        void disconnect() override;
-        void send(const std::vector<uint8_t>& data) override; 
-        std::vector<uint8_t> receive() override;
+class ZeroMQAdapter : public CommunicationInterface {
+public:
+    ZeroMQAdapter();
+    ~ZeroMQAdapter() override;
 
-    private:
-        zmq::context_t context_;
-        zmq::socket_t socket_;
+    void connect(const std::string& address) override;
+    void bind(const std::string& address); 
+    void disconnect() override;
+    void send(const std::vector<uint8_t>& data) override;
+    std::vector<uint8_t> receive() override;
+
+private:
+    zmq::context_t context_;
+    zmq::socket_t socket_;
 };
-}
+
+} // namespace network_comm

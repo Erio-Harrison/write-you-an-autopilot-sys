@@ -62,9 +62,6 @@ ament_target_dependencies(mock_server_node
 target_link_libraries(network_bridge_node ${ZMQ_LIBRARY})
 target_link_libraries(mock_server_node ${ZMQ_LIBRARY})
 
-target_link_libraries(network_bridge_node ${OPENSSL_LIBRARIES})
-target_link_libraries(mock_server_node ${OPENSSL_LIBRARIES})
-
 
 # Install executables
 install(TARGETS

@@ -1,5 +1,4 @@
 #include "auto_drive_network_bridge/network_bridge_node.hpp"
-#include <sodium.h>
 #include <nlohmann/json.hpp>
 
 NetworkBridgeNode::NetworkBridgeNode() : Node("network_bridge_node") {

@@ -1,6 +1,5 @@
 #include <rclcpp/rclcpp.hpp>
 #include <network_comm/zeromq_adapter.hpp>
-#include <sodium.h>
 #include <nlohmann/json.hpp>
 #include "auto_drive_msgs/msg/vehicle_state.hpp"
 #include <thread>

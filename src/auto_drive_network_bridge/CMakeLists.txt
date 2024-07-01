@@ -11,7 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(network_comm REQUIRED)
 find_package(auto_drive_msgs REQUIRED)
 
-# 手动查找 ZeroMQ (如果需要的话)
+# Manually find ZeroMQ (if needed)
 find_path(ZMQ_INCLUDE_DIR zmq.h)
 find_library(ZMQ_LIBRARY NAMES zmq)
 
@@ -19,38 +19,62 @@ if(NOT ZMQ_INCLUDE_DIR OR NOT ZMQ_LIBRARY)
   message(FATAL_ERROR "ZeroMQ not found. Please install libzmq3-dev")
 endif()
 
-# 添加头文件目录
+# nlohmann_json
+include(FetchContent)
+FetchContent_Declare(
+  json
+  URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.hpp
+  DOWNLOAD_NO_EXTRACT TRUE
+  DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/json
+)
+FetchContent_MakeAvailable(json)
+
+# Add include directories
 include_directories(
   include
+  ${CMAKE_CURRENT_BINARY_DIR}/json
   ${ZMQ_INCLUDE_DIR}
 )
 
-# 添加可执行文件
+# Add executables
 add_executable(network_bridge_node
   src/network_bridge_node.cpp
 )
+add_executable(mock_server_node
+  src/mock_server_node.cpp
+)
 
-# 链接依赖库
+# Link dependencies
 ament_target_dependencies(network_bridge_node
   rclcpp
   network_comm
   auto_drive_msgs
 )
-
-target_link_libraries(network_bridge_node
-  ${ZMQ_LIBRARY}
+ament_target_dependencies(mock_server_node
+  rclcpp
+  network_comm
+  auto_drive_msgs
 )
 
-# 安装可执行文件
+target_link_libraries(network_bridge_node ${ZMQ_LIBRARY})
+target_link_libraries(mock_server_node ${ZMQ_LIBRARY})
+
+# Install executables
 install(TARGETS
   network_bridge_node
+  mock_server_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# 安装头文件
+# Install header files
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.hpp"
+)
+
+# Install json.hpp
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/json/json.hpp
+  DESTINATION include/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)

@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
 project(auto_drive_network_bridge)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
@@ -10,6 +13,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(network_comm REQUIRED)
 find_package(auto_drive_msgs REQUIRED)
+find_package(OpenSSL REQUIRED)
 
 # Manually find ZeroMQ (if needed)
 find_path(ZMQ_INCLUDE_DIR zmq.h)
@@ -39,9 +43,11 @@ include_directories(
 # Add executables
 add_executable(network_bridge_node
   src/network_bridge_node.cpp
+  src/secure_communication.cpp
 )
 add_executable(mock_server_node
   src/mock_server_node.cpp
+  src/secure_communication.cpp
 )
 
 # Link dependencies
@@ -58,6 +64,9 @@ ament_target_dependencies(mock_server_node
 
 target_link_libraries(network_bridge_node ${ZMQ_LIBRARY})
 target_link_libraries(mock_server_node ${ZMQ_LIBRARY})
+
+target_link_libraries(network_bridge_node ${OPENSSL_LIBRARIES})
+target_link_libraries(mock_server_node ${OPENSSL_LIBRARIES})
 
 # Install executables
 install(TARGETS

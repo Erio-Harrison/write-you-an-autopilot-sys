@@ -1,46 +1,19 @@
 #include <rclcpp/rclcpp.hpp>
 #include <network_comm/zeromq_adapter.hpp>
+#include <sodium.h>
 #include <nlohmann/json.hpp>
 #include "auto_drive_msgs/msg/vehicle_state.hpp"
-#include "auto_drive_network_bridge/secure_communication.hpp"
 #include <thread>
 #include <mutex>
 #include <vector>
 #include <memory>
 #include <atomic>
-
-class Connection {
-public:
-    Connection(std::unique_ptr<SecureCommunication> comm)
-        : secure_comm_(std::move(comm)), is_active_(true) {}
-
-    bool send(const std::string& message) {
-        return secure_comm_->send(message);
-    }
-
-    std::string receive() {
-        return secure_comm_->receive();
-    }
-
-    void close() {
-        is_active_ = false;
-    }
-
-    bool is_active() const {
-        return is_active_;
-    }
-
-private:
-    std::unique_ptr<SecureCommunication> secure_comm_;
-    std::atomic<bool> is_active_;
-};
+#include <queue>
 
 class MockServerNode : public rclcpp::Node {
 public:
     MockServerNode() : Node("mock_server_node"), should_exit_(false) {
-        listener_thread_ = std::thread(&MockServerNode::listen_for_connections, this);
-
-        comm_ = std::make_unique<network_comm::ZeroMQAdapter>();
+    comm_ = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::rep);
         try {
             comm_->bind("tcp://0.0.0.0:5555");
             RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
@@ -49,78 +22,67 @@ public:
             return;
         }
 
-        connection_handler_thread_ = std::thread(&MockServerNode::handle_connections, this);
+        receiver_thread_ = std::thread(&MockServerNode::receiverLoop, this);
+        
+        // Start worker threads
+        for (int i = 0; i < 4; ++i) {  // Using 4 worker threads, adjust as needed
+            worker_threads_.emplace_back(&MockServerNode::workerLoop, this);
+        }
 
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(100),
-            std::bind(&MockServerNode::serverLoop, this));
+            std::bind(&MockServerNode::timerCallback, this));
     }
 
     ~MockServerNode() {
         should_exit_ = true;
-        if (listener_thread_.joinable()) {
-            listener_thread_.join();
+        if (receiver_thread_.joinable()) {
+            receiver_thread_.join();
         }
-        if (connection_handler_thread_.joinable()) {
-            connection_handler_thread_.join();
+        for (auto& thread : worker_threads_) {
+            if (thread.joinable()) {
+                thread.join();
+            }
         }
     }
 
 private:
-    void listen_for_connections() {
+    void receiverLoop() {
         while (!should_exit_) {
-            auto secure_comm = std::make_unique<SecureCommunication>();
-            if (secure_comm->initialize(true) && secure_comm->accept(8080)) {
-                RCLCPP_INFO(this->get_logger(), "Accepted new connection");
-                std::lock_guard<std::mutex> lock(connections_mutex_);
-                connections_.push_back(std::make_unique<Connection>(std::move(secure_comm)));
+            try {
+                auto received_data = comm_->receive();
+                if (!received_data.empty()) {
+                    std::string json_str(received_data.begin(), received_data.end());
+                    std::lock_guard<std::mutex> lock(queue_mutex_);
+                    message_queue_.push(json_str);
+                }
+            } catch (const std::exception& e) {
+                RCLCPP_ERROR(this->get_logger(), "Error in receiver loop: %s", e.what());
             }
         }
     }
 
-    void handle_connections() {
+    void workerLoop() {
         while (!should_exit_) {
-            std::vector<std::unique_ptr<Connection>> active_connections;
+            std::string message;
             {
-                std::lock_guard<std::mutex> lock(connections_mutex_);
-                for (auto it = connections_.begin(); it != connections_.end();) {
-                    if ((*it)->is_active()) {
-                        active_connections.push_back(std::move(*it));
-                        it = connections_.erase(it);
-                    } else {
-                        ++it;
-                    }
+                std::lock_guard<std::mutex> lock(queue_mutex_);
+                if (!message_queue_.empty()) {
+                    message = message_queue_.front();
+                    message_queue_.pop();
                 }
             }
-
-            for (auto& conn : active_connections) {
-                try {
-                    std::string received = conn->receive();
-                    if (!received.empty()) {
-                        process_message(received, *conn);
-                    }
-                } catch (const std::exception& e) {
-                    RCLCPP_ERROR(this->get_logger(), "Error processing connection: %s", e.what());
-                    conn->close();
-                }
+            if (!message.empty()) {
+                process_message(message);
+            } else {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
-
-            {
-                std::lock_guard<std::mutex> lock(connections_mutex_);
-                for (auto& conn : active_connections) {
-                    if (conn->is_active()) {
-                        connections_.push_back(std::move(conn));
-                    }
-                }
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 
-    void process_message(const std::string& message, Connection& conn) {
+    void process_message(const std::string& json_str) {
         try {
-            auto j = nlohmann::json::parse(message);
+            auto j = nlohmann::json::parse(json_str);
             RCLCPP_INFO(this->get_logger(), "Received vehicle state: x=%f, y=%f, yaw=%f",
                 j["position_x"].get<double>(),
                 j["position_y"].get<double>(),
@@ -129,42 +91,27 @@ private:
             // Echo back the received data with a small modification
             j["position_x"] = j["position_x"].get<double>() + 1.0;
             std::string response = j.dump();
-            conn.send(response);
+            std::vector<uint8_t> response_data(response.begin(), response.end());
+            
+            std::lock_guard<std::mutex> lock(comm_mutex_);
+            comm_->send(response_data);
         } catch (const std::exception& e) {
             RCLCPP_ERROR(this->get_logger(), "Error processing message: %s", e.what());
         }
     }
 
-    void serverLoop() {
-        try {
-            auto received_data = comm_->receive();
-            if (!received_data.empty()) {
-                std::string json_str(received_data.begin(), received_data.end());
-                auto j = nlohmann::json::parse(json_str);
-
-                RCLCPP_INFO(this->get_logger(), "Received vehicle state via ZeroMQ: x=%f, y=%f, yaw=%f",
-                    j["position_x"].get<double>(),
-                    j["position_y"].get<double>(),
-                    j["yaw"].get<double>());
-
-                // Echo back the received data with a small modification
-                j["position_x"] = j["position_x"].get<double>() + 1.0;
-                json_str = j.dump();
-                std::vector<uint8_t> response_data(json_str.begin(), json_str.end());
-                comm_->send(response_data);
-            }
-        } catch (const std::exception& e) {
-            RCLCPP_ERROR(this->get_logger(), "Error in server loop: %s", e.what());
-        }
+    void timerCallback() {
+        // This callback is empty but can be used for periodic tasks if needed
     }
 
-    std::unique_ptr<network_comm::CommunicationInterface> comm_;
+    std::unique_ptr<network_comm::ZeroMQAdapter> comm_;
     rclcpp::TimerBase::SharedPtr timer_;
-    std::vector<std::unique_ptr<Connection>> connections_;
-    std::mutex connections_mutex_;
-    std::thread listener_thread_;
-    std::thread connection_handler_thread_;
+    std::thread receiver_thread_;
+    std::vector<std::thread> worker_threads_;
     std::atomic<bool> should_exit_;
+    std::queue<std::string> message_queue_;
+    std::mutex queue_mutex_;
+    std::mutex comm_mutex_;
 };
 
 int main(int argc, char** argv) {

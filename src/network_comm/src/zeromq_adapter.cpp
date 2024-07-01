@@ -1,26 +1,38 @@
 #include "network_comm/zeromq_adapter.hpp"
+#include <sodium.h>
+#include <stdexcept>
+#include <iostream>
 
 namespace network_comm {
 
-ZeroMQAdapter::ZeroMQAdapter() : context_(1), socket_(context_, zmq::socket_type::pair) {}
+ZeroMQAdapter::ZeroMQAdapter(zmq::socket_type type)
+    : context_(1), socket_(context_, type), is_server_(false) {}
 
 ZeroMQAdapter::~ZeroMQAdapter() {
     disconnect();
 }
 
-void ZeroMQAdapter::connect(const std::string& address) {
-    try {
-        socket_.connect(address);
-    } catch (const zmq::error_t& e) {
-        throw std::runtime_error("ZeroMQ connect failed: " + std::string(e.what()));
-    }
-}
-
 void ZeroMQAdapter::bind(const std::string& address) {
     try {
         socket_.bind(address);
+        is_server_ = true;
+        std::cout << "Bind successful" << std::endl;
     } catch (const zmq::error_t& e) {
+        std::cerr << "ZeroMQ bind failed: " << e.what() << std::endl;
+        std::cerr << "Error code: " << e.num() << std::endl;
         throw std::runtime_error("ZeroMQ bind failed: " + std::string(e.what()));
+    }
+}
+
+void ZeroMQAdapter::connect(const std::string& address) {
+    try {
+        socket_.connect(address);
+        is_server_ = false;
+        std::cout << "Connect successful" << std::endl;
+    } catch (const zmq::error_t& e) {
+        std::cerr << "ZeroMQ connect failed: " << e.what() << std::endl;
+        std::cerr << "Error code: " << e.num() << std::endl;
+        throw std::runtime_error("ZeroMQ connect failed: " + std::string(e.what()));
     }
 }
 

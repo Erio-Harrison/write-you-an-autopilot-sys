@@ -13,7 +13,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(network_comm REQUIRED)
 find_package(auto_drive_msgs REQUIRED)
-find_package(OpenSSL REQUIRED)
 
 # Manually find ZeroMQ (if needed)
 find_path(ZMQ_INCLUDE_DIR zmq.h)
@@ -43,11 +42,9 @@ include_directories(
 # Add executables
 add_executable(network_bridge_node
   src/network_bridge_node.cpp
-  src/secure_communication.cpp
 )
 add_executable(mock_server_node
   src/mock_server_node.cpp
-  src/secure_communication.cpp
 )
 
 # Link dependencies
@@ -67,6 +64,7 @@ target_link_libraries(mock_server_node ${ZMQ_LIBRARY})
 
 target_link_libraries(network_bridge_node ${OPENSSL_LIBRARIES})
 target_link_libraries(mock_server_node ${OPENSSL_LIBRARIES})
+
 
 # Install executables
 install(TARGETS

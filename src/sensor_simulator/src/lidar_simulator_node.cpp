@@ -25,9 +25,8 @@ private:
         cloud.header.stamp = this->now();
         cloud.header.frame_id = "lidar_frame";
         cloud.height = 1;
-        cloud.width = 50;  // 50 points
+        cloud.width = 50;
         cloud.is_dense = true;
-        //大端小端，false为小端
         cloud.is_bigendian = false;
         cloud.fields.resize(3);
         
@@ -50,11 +49,11 @@ private:
         cloud.row_step = cloud.point_step * cloud.width;
         cloud.data.resize(cloud.row_step * cloud.height);
 
-        for (size_t i = 0; i < cloud.width; ++i)
+        for (size_t i = 0; i < cloud.height * cloud.width; ++i)
         {
             float x = dis(gen);
             float y = dis(gen);
-            float z = dis(gen) / 2.0;  // z range is half of x and y
+            float z = dis(gen) / 2.0;
 
             memcpy(&cloud.data[i * cloud.point_step + 0], &x, sizeof(float));
             memcpy(&cloud.data[i * cloud.point_step + 4], &y, sizeof(float));

@@ -6,9 +6,9 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 
 ![result](./asset/system_design.png)
 
-## Install
+## Environment
 
-[ROS2 Basic](https://github.com/Erio-Harrison/ros2_basic)
+`Ubuntu 22.04.4 LTS` and `ROS2 (Robot Operating System 2)`
 
 
 ## Use

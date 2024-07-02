@@ -13,24 +13,24 @@ class MockServerNode : public rclcpp::Node {
 public:
     MockServerNode() : Node("mock_server_node"), should_exit_(false) {
     comm_ = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::rep);
-        try {
-            comm_->bind("tcp://0.0.0.0:5555");
-            RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
-        } catch (const std::exception& e) {
-            RCLCPP_ERROR(this->get_logger(), "Failed to bind: %s", e.what());
-            return;
-        }
+    try {
+        comm_->bind("tcp://0.0.0.0:5555");
+        RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR(this->get_logger(), "Failed to bind: %s", e.what());
+        return;
+    }
 
-        receiver_thread_ = std::thread(&MockServerNode::receiverLoop, this);
-        
-        // Start worker threads
-        for (int i = 0; i < 4; ++i) {  // Using 4 worker threads, adjust as needed
-            worker_threads_.emplace_back(&MockServerNode::workerLoop, this);
-        }
+    receiver_thread_ = std::thread(&MockServerNode::receiverLoop, this);
+    
+    // Start worker threads
+    for (int i = 0; i < 4; ++i) {  // Using 4 worker threads, adjust as needed
+        worker_threads_.emplace_back(&MockServerNode::workerLoop, this);
+    }
 
-        timer_ = this->create_wall_timer(
-            std::chrono::milliseconds(100),
-            std::bind(&MockServerNode::timerCallback, this));
+    timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(100),
+        std::bind(&MockServerNode::timerCallback, this));
     }
 
     ~MockServerNode() {

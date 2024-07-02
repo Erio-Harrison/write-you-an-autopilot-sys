@@ -1,6 +1,6 @@
 ![result](./asset/logo.png)
 
-# write-you-an-autopilot-sys
+# Write-You-An-Autopilot-System
 
 Take you step by step to realize a simple version of the autonomous driving system.
 

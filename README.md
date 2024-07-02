@@ -1,10 +1,8 @@
+![result](./asset/logo.png)
+
 # write-you-an-autopilot-sys
 
-An autonomous driving perception and planning system based on ROS2, including obstacle detection, tracking and path planning functions.
-
-Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planning -> control instructions (analog output)
-
-![result](./asset/system_design.png)
+Take you step by step to realize a simple version of the autonomous driving system.
 
 ## Environment
 
@@ -38,10 +36,6 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
    You may see something like this:
 
 ![result](./asset/configure.png)
-
-## Contribution
-
-If anyone wants to add examples based on this, please directly apply for PR.
 
 ## License Statement
 

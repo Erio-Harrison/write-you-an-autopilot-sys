@@ -43,6 +43,6 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 
 If anyone wants to add examples based on this, please directly apply for PR.
 
-## 许可声明
+## License Statement
 
-注意本教程内容受Apache许可保护，作者保留全部版权。
+Note: The content of this tutorial is protected by the Apache License, and the author reserves all copyrights.

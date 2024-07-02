@@ -25,7 +25,7 @@ public:
         vehicle_state_sub_ = this->create_subscription<auto_drive_msgs::msg::VehicleState>(
             "vehicle_state", 10, 
             std::bind(&AutoDriveVisualizerNode::vehicleStateCallback, this, std::placeholders::_1));
-        
+
         marker_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("visualization_markers", 10);
         path_pub_ = this->create_publisher<nav_msgs::msg::Path>("visualization_path", 10);
         vehicle_marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("vehicle_marker", 10);
@@ -142,7 +142,7 @@ private:
 
         vehicle_marker_pub_->publish(marker);
     }
-
+    
     rclcpp::Subscription<auto_drive_msgs::msg::Obstacle>::SharedPtr detected_obstacles_sub_;
     rclcpp::Subscription<auto_drive_msgs::msg::Obstacle>::SharedPtr tracked_obstacles_sub_;
     rclcpp::Subscription<auto_drive_msgs::msg::Path>::SharedPtr path_sub_;

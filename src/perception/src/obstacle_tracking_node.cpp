@@ -48,7 +48,7 @@ public:
     Eigen::VectorXd getState() const { return x; }
 
 private:
-    static constexpr double dt = 0.1;  // 时间步长
+    static constexpr double dt = 0.1;  // Time Step
     Eigen::MatrixXd A, H, Q, R, P, K, I;
     Eigen::VectorXd x;
 };

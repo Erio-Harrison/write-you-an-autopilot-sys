@@ -2,7 +2,7 @@
 
 # Write-You-An-Autopilot-System
 
-This is a tutorial that teaches you how to build an autonomous driving system step by step. You can copy the code directly, but the better way is to follow along.
+This is a tutorial that teaches you how to build an autonomous driving system step by step.
 
 # Tutorial
 

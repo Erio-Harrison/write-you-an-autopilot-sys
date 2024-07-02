@@ -12,16 +12,21 @@ First, let's review the architecture of autonomous driving system technology to 
 
 3. Control: Execute the planned path and behavioral decisions by operating the vehicle through the vehicle control system (such as steering wheel, accelerator, brake).
 
-In simple terms, perception is responsible for collecting and initially processing data, planning is responsible for path planning based on perception information, and control is responsible for the actual operation of the vehicle. Each function requires countless people to invest immense effort in development. The simple implementation in this educational project can be seen as a starting point for further exploration. Due to the lack of necessary hardware resources, we will use ROS2's built-in point cloud type to simulate data from lidar. Each autonomous vehicle typically communicates with a central server (also known as a cloud server) over a network; we will develop a simple server to simulate the presence of this central server. The tutorial will introduce their implementation processes in detail once we officially begin.
+In simple terms, perception is responsible for collecting and initially processing data, planning is responsible for path planning based on perception information, and control is responsible for the actual operation of the vehicle. 
 
-# Why Choose ROS2?
+Each function requires countless people to invest immense effort in development. The simple implementation in this educational project can be seen as a starting point for further exploration. 
 
-ROS2 is very suitable for beginners to get started with autonomous driving because it's easy to run a demo, and many startup companies also use ROS2 for experiments in their early stages. Additionally, many existing frameworks in the market are modified versions based on ROS2 (such as Baidu's Apollo).
-From a job-seeking perspective, familiarity with ROS2 is a crucial skill for robotics and autonomous driving-related development.
+Due to the lack of necessary hardware resources, we will use ROS2's built-in `point cloud` type to simulate data from lidar. Each autonomous vehicle typically communicates with a central server (also known as a cloud server) over a network; we will develop a simple server to simulate the presence of this central server. The tutorial will introduce their implementation processes in detail once we officially begin.
+
+# Why Choose ROS2(Robot Operating System 2)?
+
+`ROS2` is very suitable for beginners to get started with autonomous driving because it's easy to run a demo, and many startup companies also use `ROS2` for experiments in their early stages. Additionally, many existing frameworks in the market are modified versions based on `ROS2` (such as Baidu's `Apollo`).
+
+From a job-seeking perspective, familiarity with `ROS2` is a crucial skill for robotics and autonomous driving-related development.
 
 # Environment Setup
 
-We are developing under the `Ubuntu 22.04.4 LTS` and `ROS2 (Robot Operating System 2)` environment. For those who want to learn how to use the ROS2 basic framework, you can refer to the following resources (I will introduce the relevant content we use again in the explanation process, so friends who are not familiar with ROS2 don't need to feel anxious):
+We are developing under the `Ubuntu 22.04.4 LTS` and `ROS2` environment. For those who want to learn how to use the `ROS2` basic framework, you can refer to the following resources (I will introduce the relevant content we use again in the explanation process, so friends who are not familiar with `ROS2` don't need to feel anxious):
 
 [ROS2 Basic](https://github.com/Erio-Harrison/ros2_basic)
 

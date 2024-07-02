@@ -1,4 +1,4 @@
-# auto_drive
+# write-you-an-autopilot-sys
 
 An autonomous driving perception and planning system based on ROS2, including obstacle detection, tracking and path planning functions.
 
@@ -16,7 +16,7 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 1. Clone this repository, then:
 
    ```bash
-   cd auto_drive
+   cd write-you-an-autopilot-sys
    ```
 2. We use ZeroMq for network communication:
 
@@ -42,3 +42,7 @@ Data flow: sensor data -> obstacle detection -> obstacle tracking -> path planni
 ## Contribution
 
 If anyone wants to add examples based on this, please directly apply for PR.
+
+## 许可声明
+
+注意本教程内容受Apache许可保护，作者保留全部版权。

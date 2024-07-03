@@ -12,31 +12,9 @@ This is a tutorial that teaches you how to build an autonomous driving system st
 
 `Ubuntu 22.04.4 LTS` and `ROS2 (Robot Operating System 2)`
 
-# Demo
+# Demo Result
 
-1. Clone this repository, then:
-
-   ```bash
-   cd write-you-an-autopilot-sys
-   ```
-2. We use ZeroMq for network communication:
-
-   ```bash
-   sudo apt-get update
-   sudo apt-get install libzmq3-dev
-   ```
-
-3. Build and Run: 
-
-   ```
-   colcon build
-   ```
-
-   ```bash
-   ros2 launch launch/auto_drive_system.launch.py
-   ```
-
-   You may see something like this:
+You may see something like this:
 
 ![result](./asset/configure.png)
 

@@ -44,6 +44,12 @@ private:
         publishVehicleMarker(msg);
     }
 
+/**
+ * The function `pathCallback` subscribes to a message containing a path, transforms it into a new
+ * message with a specified frame ID, and publishes it.
+ * 
+ * @param msg auto_drive_msgs::msg::Path::SharedPtr msg
+ */
     void pathCallback(const auto_drive_msgs::msg::Path::SharedPtr msg) {
         nav_msgs::msg::Path path;
         path.header.frame_id = "map";
@@ -123,23 +129,22 @@ private:
 
         marker.pose.position.x = msg->position_x;
         marker.pose.position.y = msg->position_y;
-        marker.pose.position.z = 0.0;  // 假设车辆在地平面上
+        marker.pose.position.z = 0.0;  // Assume the vehicle is on the ground plane
 
         tf2::Quaternion q;
-        q.setRPY(0, 0, msg->yaw);  // 设置车辆朝向
+        q.setRPY(0, 0, msg->yaw);  //Set vehicle orientation
         marker.pose.orientation = tf2::toMsg(q);
 
-        marker.scale.x = 2.0;  // 箭头长度
-        marker.scale.y = 0.5;  // 箭头宽度
-        marker.scale.z = 0.5;  // 箭头高度
+        marker.scale.x = 2.0;  // Arrow Length
+        marker.scale.y = 0.5;  // Arrow Width
+        marker.scale.z = 0.5;  // Arrow height
 
         marker.color.r = 0.0;
         marker.color.g = 0.0;
-        marker.color.b = 1.0;  // 蓝色
+        marker.color.b = 1.0;  // blue
         marker.color.a = 1.0;
 
-        marker.lifetime = rclcpp::Duration::from_seconds(0);  // 永久显示
-
+        marker.lifetime = rclcpp::Duration::from_seconds(0);  // Permanent display
         vehicle_marker_pub_->publish(marker);
     }
     
@@ -147,6 +152,7 @@ private:
     rclcpp::Subscription<auto_drive_msgs::msg::Obstacle>::SharedPtr tracked_obstacles_sub_;
     rclcpp::Subscription<auto_drive_msgs::msg::Path>::SharedPtr path_sub_;
     rclcpp::Subscription<auto_drive_msgs::msg::VehicleState>::SharedPtr vehicle_state_sub_;
+    
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
     rclcpp::Publisher<nav_msgs::msg::Path>::SharedPtr path_pub_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr vehicle_marker_pub_;

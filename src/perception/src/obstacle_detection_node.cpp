@@ -39,7 +39,7 @@ private:
         }
 
         // Perform clustering
-        std::vector<geometry_msgs::msg::Point> clusters = kMeansClustering(points, 5);  // 假设我们想要5个聚类
+        std::vector<geometry_msgs::msg::Point> clusters = kMeansClustering(points, 5);  // Suppose we want 5 clusters
 
         // Publish clustering results as obstacles
         for (const auto& cluster : clusters) {

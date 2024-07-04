@@ -169,6 +169,7 @@ private:
         return {}; // Path not found
     }
 
+
     rclcpp::Subscription<auto_drive_msgs::msg::Obstacle>::SharedPtr obstacle_sub_;
     rclcpp::Publisher<auto_drive_msgs::msg::Path>::SharedPtr path_pub_;
 };

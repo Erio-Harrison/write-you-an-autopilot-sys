@@ -105,6 +105,7 @@ private:
         marker.color.b = b;
         marker.color.a = 1.0;
         
+        marker.lifetime = rclcpp::Duration::from_seconds(5);
         marker_array.markers.push_back(marker);
         marker_pub_->publish(marker_array);
     }
@@ -144,7 +145,7 @@ private:
         marker.color.b = 1.0;  // blue
         marker.color.a = 1.0;
 
-        marker.lifetime = rclcpp::Duration::from_seconds(0);  // Permanent display
+        marker.lifetime = rclcpp::Duration::from_seconds(0.5);
         vehicle_marker_pub_->publish(marker);
     }
     

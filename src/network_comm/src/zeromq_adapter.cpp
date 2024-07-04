@@ -6,7 +6,7 @@
 namespace network_comm {
 
 ZeroMQAdapter::ZeroMQAdapter(zmq::socket_type type)
-    : context_(1), socket_(context_, type), is_server_(false) {}
+    : context_(1), socket_(context_, type) {}
 
 ZeroMQAdapter::~ZeroMQAdapter() {
     disconnect();
@@ -15,7 +15,6 @@ ZeroMQAdapter::~ZeroMQAdapter() {
 void ZeroMQAdapter::bind(const std::string& address) {
     try {
         socket_.bind(address);
-        is_server_ = true;
         std::cout << "Bind successful" << std::endl;
     } catch (const zmq::error_t& e) {
         std::cerr << "ZeroMQ bind failed: " << e.what() << std::endl;
@@ -27,7 +26,6 @@ void ZeroMQAdapter::bind(const std::string& address) {
 void ZeroMQAdapter::connect(const std::string& address) {
     try {
         socket_.connect(address);
-        is_server_ = false;
         std::cout << "Connect successful" << std::endl;
     } catch (const zmq::error_t& e) {
         std::cerr << "ZeroMQ connect failed: " << e.what() << std::endl;

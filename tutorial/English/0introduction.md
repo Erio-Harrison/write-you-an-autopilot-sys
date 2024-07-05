@@ -1,34 +1,30 @@
 # Introduction
 
-Hello everyone, I'm Harrison, and today I'm excited to start writing this educational project. Following this tutorial, you can build a simple autonomous driving system step by step. I will explain the code logic used in the project as thoroughly as possible, covering many professional terms you might have heard before, such as network communication, thread pools, path-finding algorithms, PID controllers, distributed systems, and more. Even if you don't have a C++ background, I believe you can benefit from this. I welcome feedback from fellow learners. Alright, let's begin.
+Hello everyone, I'm Harrison. Today I'm looking forward to writing this tutorial. Following this tutorial, you can build a simple autonomous driving system step by step. I will explain the code logic used in the project as detailed as possible, and will talk about many professional terms that you have heard of, such as network communication, thread pool, path finding algorithm and PID controller, distribution, etc. Even if you don't have a C++ foundation, I believe you can benefit from it. Friends who study together are welcome to give me suggestions. Okay, let's get started.
 
-# Simple Autonomous Driving System
+# Autonomous driving system architecture
 
-First, let's review the architecture of autonomous driving system technology to understand what kind of business scenario our project aims to simulate. An autonomous driving system is installed in vehicles, and its core functions are threefold: Perception, Planning, and Control.
+First, let's sort out the architecture of the autonomous driving system technology and understand what kind of business scenarios our project is designed to simulate. The autonomous driving system is installed on the vehicle, and it has three core functions: perception, planning, and control.
 
-1. Perception: Collect environmental data through sensors (such as cameras, radar, lidar, etc.), detect and classify objects, and model the environment by combining various data.
+1. **Perception**: Collect environmental data through sensors (such as cameras, radars, lidars, etc.), detect and classify objects, and combine various types of data to model the environment.
 
-2. Planning: Based on perception information, evaluate behavioral options to make decisions, and plan safe and effective paths.
+2. **Planning**: Based on the perception information, evaluate behavioral options to make decisions and plan safe and effective paths.
 
-3. Control: Execute the planned path and behavioral decisions by operating the vehicle through the vehicle control system (such as steering wheel, accelerator, brake).
+3. **Control**: Execute the planned path and behavior decisions, and operate the vehicle through the vehicle control system (such as steering wheel, accelerator, brake).
 
-In simple terms, perception is responsible for collecting and initially processing data, planning is responsible for path planning based on perception information, and control is responsible for the actual operation of the vehicle. 
+Simply put, perception is responsible for collecting and preliminarily processing data, planning is responsible for path planning based on perception information, and control is responsible for the actual operation of the vehicle. Each function requires countless people to invest countless efforts to develop, and the simple implementation in the teaching project can be said to be a starting point. Due to the lack of necessary hardware resources, we use the **point cloud type** built into **ROS2** to simulate the data from the lidar. Each driverless car usually communicates with a central server (also called a cloud server) over the network. We will complete the development of a simple server to simulate the existence of this central server. After the tutorial officially starts, we will introduce their implementation process in detail.
 
-Each function requires countless people to invest immense effort in development. The simple implementation in this educational project can be seen as a starting point for further exploration. 
+# Why choose ROS2 (Robot Operating System 2)?
 
-Due to the lack of necessary hardware resources, we will use ROS2's built-in `point cloud` type to simulate data from lidar. Each autonomous vehicle typically communicates with a central server (also known as a cloud server) over a network; we will develop a simple server to simulate the presence of this central server. The tutorial will introduce their implementation processes in detail once we officially begin.
+**ROS2** is very suitable for beginners to get started with autonomous driving, because it is easy to run a demo, and most startups also use **ROS2** to run experiments in the early stages. In addition, many existing frameworks on the market are also based on **ROS2** (such as Baidu's Apollo).
 
-# Why Choose ROS2(Robot Operating System 2)?
+From the perspective of finding a job, being familiar with **ROS2** is a very important skill for developing robots and autonomous driving.
 
-`ROS2` is very suitable for beginners to get started with autonomous driving because it's easy to run a demo, and many startup companies also use `ROS2` for experiments in their early stages. Additionally, many existing frameworks in the market are modified versions based on `ROS2` (such as Baidu's `Apollo`).
+# Environment configuration
 
-From a job-seeking perspective, familiarity with `ROS2` is a crucial skill for robotics and autonomous driving-related development.
+We developed in **Ubuntu 22.04.4 LTS** and **ROS2** environment. Friends who want to know how to use the **ROS2** basic framework can refer to the following (I will introduce what we need to use again during the explanation, so friends who don’t know **ROS2** don’t need to worry):
 
-# Environment Setup
-
-We are developing under the `Ubuntu 22.04.4 LTS` and `ROS2` environment. For those who want to learn how to use the `ROS2` basic framework, you can refer to the following resources (I will introduce the relevant content we use again in the explanation process, so friends who are not familiar with `ROS2` don't need to feel anxious):
-
-[ROS2 Basic](https://github.com/Erio-Harrison/ros2_basic)
+[ROS2 Basic-Download link is also inside](https://github.com/Erio-Harrison/ros2_basic)
 
 [ROS2 from the Ground Up: Part 1](https://medium.com/@nullbyte.in/ros2-from-the-ground-up-part-1-an-introduction-to-the-robot-operating-system-4c2065c5e032)
 

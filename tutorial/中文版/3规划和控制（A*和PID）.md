@@ -187,6 +187,7 @@ double tentative_g = current.g + 1.0;
 ```
 
 3. 路径重建：
+
 ```bash
 if (current.x == end_x && current.y == end_y)
 {
@@ -216,4 +217,3 @@ return {}; // Path not found
 # 控制层面（PID的实现）
 
 发布者和订阅者～hh，老掉牙的东西，我们只需要关注PID的实现
-

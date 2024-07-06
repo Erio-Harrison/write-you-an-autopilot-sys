@@ -1,8 +1,8 @@
-# 网络通信接口
+# Network communication interface
 
-事实上，如果服务端也在使用**ROS2**进行通信，我们是不需要使用额外的网络库的（ROS2强大的DDS机制为我们提供了高效的分布式通信），但现实场景里，服务端很少使用ROS2进行开发，所以在我们的系统当中会实现一个专门的网络通信模块。
+In fact, if the server is also using **ROS2** for communication, we do not need to use an additional network library (ROS2's powerful DDS mechanism provides us with efficient distributed communication), but in real scenarios, the server rarely uses ROS2 for development, so a dedicated network communication module will be implemented in our system.
 
-一般来说，我们会在客户端用到`connect`方法连接到服务端的地址，在服务端用`bind`方法绑定一个地址以便客户端能够连接。客户端和服务端都可以分别用`send`和`receive`来发送、接收数据。
+Generally speaking, we will use the `connect` method on the client to connect to the server's address, and use the `bind` method on the server to bind an address so that the client can connect. Both the client and the server can use `send` and `receive` to send and receive data respectively.
 
 ```bash
 #pragma once
@@ -23,14 +23,14 @@ class CommunicationInterface{
 }
 ```
 
-假如我们使用**ZeroMQ**网络库，记得要安装相关的库：
+If we use the **ZeroMQ** network library, remember to install the related libraries:
 
 ```bash
 sudo apt-get install libzmq3-dev
 ```
-**CMakeLists.txt** 和 **package.xml**里也需要添加相关的依赖。
+Related dependencies also need to be added in **CMakeLists.txt** and **package.xml**.
 
-在**zeromq_adapter.hpp**里继承这个接口，然后实现相应的适配器：
+Inherit this interface in **zeromq_adapter.hpp**, and then implement the corresponding adapter:
 
 ```bash
 #pragma once
@@ -61,7 +61,7 @@ private:
 } // namespace network_comm
 ```
 
-具体实现放到**zeromq_adapter.cpp**:
+The specific implementation is placed in **zeromq_adapter.cpp**:
 
 ```bash
 #include "network_comm/zeromq_adapter.hpp"
@@ -129,11 +129,11 @@ std::vector<uint8_t> ZeroMQAdapter::receive() {
 } // namespace network_comm
 ```
 
-好，基本机制设置好了，我们可以开始客户端和服务端的开发了。
+OK, now that the basic mechanism is set up, we can start developing the client and server.
 
-设置接口的好处有很多，给大家提供几个网络模块的相关场景来思考：
+There are many benefits to setting up interfaces. Here are a few network module-related scenarios for you to think about:
 
-1. 有些项目可能需要支持多种通信协议。例如，一个设备可能需要同时支持 TCP 和 UDP 协议。通过定义一个通用接口，并为每种协议实现具体的类，可以在运行时动态选择通信协议，而不需要修改业务逻辑代码。
+1. Some projects may need to support multiple communication protocols. For example, a device may need to support both TCP and UDP protocols. By defining a common interface and implementing specific classes for each protocol, the communication protocol can be dynamically selected at runtime without modifying the business logic code.
 
 ```bash
 std::unique_ptr<network_comm::CommunicationInterface> comm;
@@ -148,25 +148,26 @@ BusinessLogic logic(std::move(comm));
 logic.execute();
 ```
 
-2. 项目可能在后期需要增加网络通信的安全性，如添加 TLS/SSL 支持。通过定义通用接口，可以在不修改业务逻辑代码的情况下，轻松替换或扩展现有的通信实现以支持加密。
+2. The project may need to increase the security of network communication at a later stage, such as adding TLS/SSL support. By defining a common interface, the existing communication implementation can be easily replaced or extended to support encryption without modifying the business logic code.
 
 ```bash
-// 添加TLS支持前
+// Before adding TLS support
 auto comm = std::make_unique<network_comm::TCPCommunication>();
 
-// 添加TLS支持后
+// After adding TLS support
 auto comm = std::make_unique<network_comm::SecureTCPCommunication>();
 
 ```
 
-3. 项目早期我们可能选择使用ZeroMQ，后面可能想替换成MQTT。
+3. We may choose to use ZeroMQ in the early stage of the project, and may want to replace it with MQTT later.
 
 ```bash
-// 替换前使用ZeroMQ
+// Use ZeroMQ before replacement
 auto comm = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::req);
 
-// 替换后使用MQTT
+// Use MQTT after replacement
 auto comm = std::make_unique<network_comm::MQTTAdapter>();
 ```
 
-目前我们的项目使用的是**ZeroMQ**网络库，如果我们想替换成**boost_asio**呢？
+Currently our project uses the **ZeroMQ** network library. What if we want to replace it with **boost_asio**?
+

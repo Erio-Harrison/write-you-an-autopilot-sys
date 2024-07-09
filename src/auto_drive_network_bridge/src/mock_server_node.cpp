@@ -5,43 +5,98 @@
 #include <thread>
 #include <mutex>
 #include <vector>
-#include <memory>
-#include <atomic>
 #include <queue>
+#include <functional>
+#include <condition_variable>
+#include <future>
+
+class ThreadPool {
+public:
+    ThreadPool(size_t num_threads) : stop(false) {
+        for(size_t i = 0; i < num_threads; ++i) {
+            workers.emplace_back([this] {
+                while(true) {
+                    std::function<void()> task;
+                    {
+                        std::unique_lock<std::mutex> lock(this->queue_mutex);
+                        this->condition.wait(lock, [this] { 
+                            return this->stop || !this->tasks.empty(); 
+                        });
+                        if(this->stop && this->tasks.empty()) {
+                            return;
+                        }
+                        task = std::move(this->tasks.front());
+                        this->tasks.pop();
+                    }
+                    task();
+                }
+            });
+        }
+    }
+
+    template<class F, class... Args>
+    auto enqueue(F&& f, Args&&... args) 
+        -> std::future<typename std::result_of<F(Args...)>::type> {
+        using return_type = typename std::result_of<F(Args...)>::type;
+
+        auto task = std::make_shared<std::packaged_task<return_type()>>(
+            std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+        );
+            
+        std::future<return_type> res = task->get_future();
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            if(stop) {
+                throw std::runtime_error("enqueue on stopped ThreadPool");
+            }
+            tasks.emplace([task](){ (*task)(); });
+        }
+        condition.notify_one();
+        return res;
+    }
+
+    ~ThreadPool() {
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            stop = true;
+        }
+        condition.notify_all();
+        for(std::thread &worker: workers) {
+            worker.join();
+        }
+    }
+
+private:
+    std::vector<std::thread> workers;
+    std::queue<std::function<void()>> tasks;
+    std::mutex queue_mutex;
+    std::condition_variable condition;
+    bool stop;
+};
 
 class MockServerNode : public rclcpp::Node {
 public:
-    MockServerNode() : Node("mock_server_node"), should_exit_(false) {
-    comm_ = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::rep);
-    try {
-        comm_->bind("tcp://0.0.0.0:5555");
-        RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
-    } catch (const std::exception& e) {
-        RCLCPP_ERROR(this->get_logger(), "Failed to bind: %s", e.what());
-        return;
-    }
+    MockServerNode() : Node("mock_server_node"), should_exit_(false), thread_pool_(4) {
+        comm_ = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::rep);
+        try {
+            comm_->bind("tcp://0.0.0.0:5555");
+            RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
+        } catch (const std::exception& e) {
+            RCLCPP_ERROR(this->get_logger(), "Failed to bind: %s", e.what());
+            return;
+        }
 
-    receiver_thread_ = std::thread(&MockServerNode::receiverLoop, this);
-    
-    // Start worker threads
-    for (int i = 0; i < 4; ++i) {  // Using 4 worker threads, adjust as needed
-        worker_threads_.emplace_back(&MockServerNode::workerLoop, this);
-    }
+        receiver_thread_ = std::thread(&MockServerNode::receiverLoop, this);
 
-    timer_ = this->create_wall_timer(
-        std::chrono::milliseconds(100),
-        std::bind(&MockServerNode::timerCallback, this));
+        timer_ = this->create_wall_timer(
+            std::chrono::milliseconds(100),
+            std::bind(&MockServerNode::timerCallback, this));
     }
 
     ~MockServerNode() {
         should_exit_ = true;
         if (receiver_thread_.joinable()) {
             receiver_thread_.join();
-        }
-        for (auto& thread : worker_threads_) {
-            if (thread.joinable()) {
-                thread.join();
-            }
         }
     }
 
@@ -52,29 +107,10 @@ private:
                 auto received_data = comm_->receive();
                 if (!received_data.empty()) {
                     std::string json_str(received_data.begin(), received_data.end());
-                    std::lock_guard<std::mutex> lock(queue_mutex_);
-                    message_queue_.push(json_str);
+                    thread_pool_.enqueue(&MockServerNode::process_message, this, json_str);
                 }
             } catch (const std::exception& e) {
                 RCLCPP_ERROR(this->get_logger(), "Error in receiver loop: %s", e.what());
-            }
-        }
-    }
-
-    void workerLoop() {
-        while (!should_exit_) {
-            std::string message;
-            {
-                std::lock_guard<std::mutex> lock(queue_mutex_);
-                if (!message_queue_.empty()) {
-                    message = message_queue_.front();
-                    message_queue_.pop();
-                }
-            }
-            if (!message.empty()) {
-                process_message(message);
-            } else {
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
         }
     }
@@ -106,11 +142,9 @@ private:
     std::unique_ptr<network_comm::ZeroMQAdapter> comm_;
     rclcpp::TimerBase::SharedPtr timer_;
     std::thread receiver_thread_;
-    std::vector<std::thread> worker_threads_;
     std::atomic<bool> should_exit_;
-    std::queue<std::string> message_queue_;
-    std::mutex queue_mutex_;
     std::mutex comm_mutex_;
+    ThreadPool thread_pool_;
 };
 
 int main(int argc, char** argv) {

@@ -1,7 +1,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include <network_comm/zeromq_adapter.hpp>
 #include <nlohmann/json.hpp>
-#include "auto_drive_msgs/msg/vehicle_state.hpp"
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -54,7 +53,7 @@ public:
         condition.notify_one();
         return res;
     }
-
+    
     ~ThreadPool() {
         {
             std::unique_lock<std::mutex> lock(queue_mutex);
@@ -73,6 +72,7 @@ private:
     std::condition_variable condition;
     bool stop;
 };
+
 
 class MockServerNode : public rclcpp::Node {
 public:
@@ -146,6 +146,7 @@ private:
     std::mutex comm_mutex_;
     ThreadPool thread_pool_;
 };
+
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);

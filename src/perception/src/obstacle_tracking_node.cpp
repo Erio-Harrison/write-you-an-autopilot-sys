@@ -7,7 +7,7 @@ class KalmanFilter {
 public:
     KalmanFilter() 
         : A(6, 6), H(3, 6), Q(6, 6), R(3, 3), P(6, 6), K(6, 3), I(6, 6) {
-        // 状态转移矩阵
+        // State transition matrix
         A << 1, 0, 0, dt, 0, 0,
              0, 1, 0, 0, dt, 0,
              0, 0, 1, 0, 0, dt,
@@ -15,18 +15,18 @@ public:
              0, 0, 0, 0, 1, 0,
              0, 0, 0, 0, 0, 1;
 
-        // 观测矩阵
+        // Observation Matrix
         H << 1, 0, 0, 0, 0, 0,
              0, 1, 0, 0, 0, 0,
              0, 0, 1, 0, 0, 0;
 
-        // 过程噪声协方差
+        // Process noise covariance
         Q = Eigen::MatrixXd::Identity(6, 6) * 0.1;
 
-        // 测量噪声协方差
+        // Measurement noise covariance
         R = Eigen::MatrixXd::Identity(3, 3) * 0.1;
 
-        // 初始估计误差协方差
+        // Initial estimate error covariance
         P = Eigen::MatrixXd::Identity(6, 6);
 
         I = Eigen::MatrixXd::Identity(6, 6);
@@ -78,23 +78,23 @@ private:
     void obstacleCallback(const auto_drive_msgs::msg::Obstacle::SharedPtr msg) {
         auto it = trackers.find(msg->id);
         if (it == trackers.end()) {
-            // 新障碍物，初始化跟踪器
+            // New obstacle, initialize tracker
             trackers[msg->id] = std::make_unique<KalmanFilter>();
         }
 
         KalmanFilter& kf = *trackers[msg->id];
 
-        // 预测
+        //predict
         kf.predict();
 
-        // 更新
+        // renew
         Eigen::Vector3d measurement(msg->position.x, msg->position.y, msg->position.z);
         kf.update(measurement);
 
-        // 获取更新后的状态
+        // Get the updated status
         Eigen::VectorXd state = kf.getState();
 
-        // 发布跟踪结果
+        // Publish tracking results
         auto tracked_msg = *msg;
         tracked_msg.position.x = state(0);
         tracked_msg.position.y = state(1);

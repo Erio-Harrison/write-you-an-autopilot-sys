@@ -6,10 +6,10 @@ from launch.actions import TimerAction
 import os
 
 def generate_launch_description():
-    # 获取当前目录路径（因为 launch 文件在根目录）
+    # Get the current directory path (because the launch file is in the root directory)
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # RViz配置文件的路径（假设它在 rviz 目录下）
+    # Path to the RViz configuration file (assuming it is in the rviz directory)
     rviz_config_path = os.path.join(current_dir,'..', 'rviz', 'auto_drive.rviz')
 
     return LaunchDescription([
@@ -72,7 +72,7 @@ def generate_launch_description():
             name='auto_drive_visualizer',
             output='screen'
         ),
-        # 启动 RViz
+        # Start RViz
         Node(
             package='rviz2',
             executable='rviz2',

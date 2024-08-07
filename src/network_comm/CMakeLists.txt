@@ -17,18 +17,15 @@ if(NOT ZMQ_INCLUDE_DIR OR NOT ZMQ_LIBRARY)
   message(FATAL_ERROR "ZeroMQ not found. Please install libzmq3-dev")
 endif()
 
-# 添加头文件目录
 include_directories(
   include
   ${ZMQ_INCLUDE_DIR}
 )
 
-# 添加库
 add_library(${PROJECT_NAME} SHARED
   src/zeromq_adapter.cpp
 )
 
-# 链接依赖库
 target_link_libraries(${PROJECT_NAME}
   ${ZMQ_LIBRARY}
 )
@@ -36,21 +33,17 @@ target_link_libraries(${PROJECT_NAME}
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
 )
-
-# 导出头文件
 ament_export_include_directories(include)
-# 导出库
+
 ament_export_libraries(${PROJECT_NAME})
-# 导出依赖
+
 ament_export_dependencies(rclcpp)
 
-# 安装头文件
 install(
   DIRECTORY include/${PROJECT_NAME}/
   DESTINATION include/${PROJECT_NAME}
 )
 
-# 安装库
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}

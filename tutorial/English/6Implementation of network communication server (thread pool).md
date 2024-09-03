@@ -237,4 +237,4 @@ As long as you see this output:
 
 ![result](/asset/network.png)
 
-It means that it runs successfully. The following outputs are because we did not establish more network communication mechanisms, so there are small errors. The specific reasons can also be seen from the client and server codes.
+It means that it runs successfully.

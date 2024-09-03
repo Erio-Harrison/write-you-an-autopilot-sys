@@ -104,10 +104,14 @@ private:
     void receiverLoop() {
         while (!should_exit_) {
             try {
+                RCLCPP_INFO(this->get_logger(), "Waiting for incoming message");
                 auto received_data = comm_->receive();
                 if (!received_data.empty()) {
                     std::string json_str(received_data.begin(), received_data.end());
+                    RCLCPP_INFO(this->get_logger(), "Received message: %s", json_str.c_str());
                     thread_pool_.enqueue(&MockServerNode::process_message, this, json_str);
+                } else {
+                    RCLCPP_WARN(this->get_logger(), "Received empty message");
                 }
             } catch (const std::exception& e) {
                 RCLCPP_ERROR(this->get_logger(), "Error in receiver loop: %s", e.what());
@@ -116,23 +120,49 @@ private:
     }
 
     void process_message(const std::string& json_str) {
+        RCLCPP_INFO(this->get_logger(), "Processing message: %s", json_str.c_str());
         try {
             auto j = nlohmann::json::parse(json_str);
-            RCLCPP_INFO(this->get_logger(), "Received vehicle state: x=%f, y=%f, yaw=%f",
-                j["position_x"].get<double>(),
-                j["position_y"].get<double>(),
-                j["yaw"].get<double>());
-
-            // Echo back the received data with a small modification
-            j["position_x"] = j["position_x"].get<double>() + 1.0;
-            std::string response = j.dump();
-            std::vector<uint8_t> response_data(response.begin(), response.end());
             
-            std::lock_guard<std::mutex> lock(comm_mutex_);
-            comm_->send(response_data);
+            if (j["message_type"] == "test") {
+                RCLCPP_INFO(this->get_logger(), "Received test message: %s", json_str.c_str());
+                
+                // Creating a Response
+                nlohmann::json response = {
+                    {"message_type", "test_response"},
+                    {"received_timestamp", j["timestamp"]},
+                    {"response_timestamp", this->now().seconds()}
+                };
+                
+                std::string response_str = response.dump();
+                std::vector<uint8_t> response_data(response_str.begin(), response_str.end());
+                
+                RCLCPP_INFO(this->get_logger(), "Sending response: %s", response_str.c_str());
+                
+                std::lock_guard<std::mutex> lock(comm_mutex_);
+                comm_->send(response_data);
+                RCLCPP_INFO(this->get_logger(), "Response sent");
+            } else if (j["message_type"] == "vehicle_state") {
+                RCLCPP_INFO(this->get_logger(), "Received vehicle state: %s", json_str.c_str());
+                
+                // Echo back the received data with a small modification
+                j["position_x"] = j["position_x"].get<double>() + 1.0;
+                j["message_type"] = "vehicle_state_response";
+                std::string response_str = j.dump();
+                std::vector<uint8_t> response_data(response_str.begin(), response_str.end());
+                
+                RCLCPP_INFO(this->get_logger(), "Sending response: %s", response_str.c_str());
+                
+                std::lock_guard<std::mutex> lock(comm_mutex_);
+                comm_->send(response_data);
+                RCLCPP_INFO(this->get_logger(), "Response sent");
+            } else {
+                RCLCPP_WARN(this->get_logger(), "Unknown message type received");
+            }
         } catch (const std::exception& e) {
             RCLCPP_ERROR(this->get_logger(), "Error processing message: %s", e.what());
         }
+        RCLCPP_INFO(this->get_logger(), "Message processing completed");
     }
 
     void timerCallback() {
@@ -146,7 +176,6 @@ private:
     std::mutex comm_mutex_;
     ThreadPool thread_pool_;
 };
-
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);

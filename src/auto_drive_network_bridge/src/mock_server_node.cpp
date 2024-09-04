@@ -79,8 +79,8 @@ public:
     MockServerNode() : Node("mock_server_node"), should_exit_(false), thread_pool_(4) {
         comm_ = std::make_unique<network_comm::ZeroMQAdapter>(zmq::socket_type::rep);
         try {
-            comm_->bind("tcp://0.0.0.0:5555");
-            RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5555");
+            comm_->bind("tcp://0.0.0.0:5556");
+            RCLCPP_INFO(this->get_logger(), "Mock Server Node bound to port 5556");
         } catch (const std::exception& e) {
             RCLCPP_ERROR(this->get_logger(), "Failed to bind: %s", e.what());
             return;

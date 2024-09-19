@@ -1,7 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "auto_drive_msgs/msg/path.hpp"
 #include "auto_drive_msgs/msg/vehicle_state.hpp"
-#include "auto_drive_msgs/msg/control_command.hpp"
 #include <cmath>
 
 class VehicleControlNode : public rclcpp::Node {

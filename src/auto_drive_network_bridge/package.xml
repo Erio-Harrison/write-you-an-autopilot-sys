@@ -12,6 +12,7 @@
   <depend>rclcpp</depend>
   <depend>network_comm</depend>
   <depend>openssl</depend>
+  <depend>auto_drive_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

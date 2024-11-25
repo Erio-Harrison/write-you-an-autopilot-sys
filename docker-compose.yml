@@ -1,0 +1,16 @@
+version: '3'
+services:
+  autopilot:
+    build: .
+    network_mode: "host"
+    environment:
+      - DISPLAY=host.docker.internal:0.0
+      - LIBGL_ALWAYS_INDIRECT=0
+    volumes:
+      - ./:/ros2_ws/src/write-you-an-autopilot-sys
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

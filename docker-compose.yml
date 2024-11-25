@@ -4,13 +4,20 @@ services:
     build: .
     network_mode: "host"
     environment:
-      - DISPLAY=host.docker.internal:0.0
-      - LIBGL_ALWAYS_INDIRECT=0
+      - DISPLAY=:0
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
-      - ./:/ros2_ws/src/write-you-an-autopilot-sys
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+      - ./:/ros2_ws/src/write-you-an-autopilot-sys:rw
+      - ./build:/ros2_ws/build:rw
+      - ./install:/ros2_ws/install:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ~/.Xauthority:/root/.Xauthority:rw
+    privileged: true  # 可能需要用于某些图形功能
+    # 暂时注释掉 GPU 配置直到配置好 NVIDIA Container Toolkit
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
